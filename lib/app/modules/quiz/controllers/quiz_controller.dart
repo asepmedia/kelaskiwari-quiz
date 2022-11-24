@@ -45,6 +45,16 @@ class QuizController extends GetxController {
           OptionModel(text: "Styling Rambut"),
           OptionModel(text: "Semua Benar")
         ]));
+
+    questions.add(QuestionModel(
+        question: "Kepanjangan dari DOM?",
+        correctAnswer: 1,
+        options: [
+          OptionModel(text: "Data Object Model"),
+          OptionModel(text: "Document Object Model"),
+          OptionModel(text: "Data Offline Market"),
+          OptionModel(text: "Semua Salah")
+        ]));
   }
 
   @override

@@ -10,9 +10,17 @@ class ScoreView extends GetView<ScoreController> {
   @override
   Widget build(BuildContext context) {
     var argument = Get.arguments;
-    var score = argument['score'];
+    int score = int.parse(argument['score']);
 
-    print(argument);
+    Color scoreColor() {
+      if (score < 51) {
+        return Colors.red;
+      } else if (score < 76) {
+        return Colors.orange;
+      }
+      return primaryColor;
+    }
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -31,7 +39,7 @@ class ScoreView extends GetView<ScoreController> {
               ),
               Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: primaryColor, width: 4),
+                    border: Border.all(color: scoreColor(), width: 4),
                     borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding:
@@ -40,7 +48,7 @@ class ScoreView extends GetView<ScoreController> {
                     '${score}',
                     style: TextStyle(
                         fontSize: 90,
-                        color: primaryColor,
+                        color: scoreColor(),
                         fontWeight: FontWeight.w900),
                   ),
                 ),
