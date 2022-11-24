@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:quiz_kelaskiwari/app/data/models/option_model.dart';
 import 'package:quiz_kelaskiwari/app/data/models/question_model.dart';
@@ -6,12 +8,15 @@ import 'package:quiz_kelaskiwari/app/routes/app_pages.dart';
 class QuizController extends GetxController {
   //TODO: Implement QuizController
 
-  final duration = 0.obs;
+  var duration = 5.obs;
   var _currentQuestion = 0.obs;
   var _selectedOption = 5.obs;
   var questions = <QuestionModel>[].obs;
   var correct = <QuestionModel>[].obs;
   var wrong = <QuestionModel>[].obs;
+
+  Timer? countdownTimer;
+
   @override
   void onInit() {
     super.onInit();
@@ -24,7 +29,7 @@ class QuizController extends GetxController {
           OptionModel(text: "Hypermakeup Markup Language"),
           OptionModel(text: "Hyper Markup Language"),
           OptionModel(text: "Hahahihi Markup Language")
-        ]));
+        ]).setDuration(10));
 
     questions.add(QuestionModel(
         question: "Flutter & Dart digunakan untuk?",
@@ -34,7 +39,7 @@ class QuizController extends GetxController {
           OptionModel(text: "Membuat Aplikasi Web"),
           OptionModel(text: "Membuat REST API"),
           OptionModel(text: "Membuat Koneksi Database")
-        ]));
+        ]).setDuration(15));
 
     questions.add(QuestionModel(
         question: "CSS digunakan untuk?",
@@ -44,7 +49,7 @@ class QuizController extends GetxController {
           OptionModel(text: "Styling Website"),
           OptionModel(text: "Styling Rambut"),
           OptionModel(text: "Semua Benar")
-        ]));
+        ]).setDuration(5));
 
     questions.add(QuestionModel(
         question: "Kepanjangan dari DOM?",
@@ -54,12 +59,13 @@ class QuizController extends GetxController {
           OptionModel(text: "Document Object Model"),
           OptionModel(text: "Data Offline Market"),
           OptionModel(text: "Semua Salah")
-        ]));
+        ]).setDuration(20));
   }
 
   @override
   void onReady() {
     super.onReady();
+    startTimer();
   }
 
   @override
@@ -80,6 +86,25 @@ class QuizController extends GetxController {
     return _currentQuestion == questions.length - 1;
   }
 
+  void startTimer() {
+    duration.value = currentQuestion.duration;
+    countdownTimer = Timer.periodic(Duration(seconds: 1), (_) {
+      setCountDown();
+      print("Start");
+    });
+  }
+
+  void setCountDown() {
+    final reduceSecondsBy = 1;
+    int seconds = duration.value - reduceSecondsBy;
+    if (seconds < 0) {
+      countdownTimer!.cancel();
+      nextQuestion();
+    } else {
+      duration.value = seconds;
+    }
+  }
+
   void clearSelectedOption() {
     _selectedOption.value = 5;
   }
@@ -95,6 +120,7 @@ class QuizController extends GetxController {
     if (!isLastQuestion) {
       _currentQuestion.value = _currentQuestion.value + 1;
       clearSelectedOption();
+      startTimer();
       update(["LIST_OPTION"], true);
     } else {
       correct.value =
